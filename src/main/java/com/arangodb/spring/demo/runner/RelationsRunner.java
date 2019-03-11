@@ -20,17 +20,22 @@ public class RelationsRunner implements CommandLineRunner {
 
     @Override
     public void run(final String... args) throws Exception {
-        Collection<Route> createRoutes = createRoutes();
-
-        routeRepository.save(createRoutes);
         long count = routeRepository.count();
-
         Iterable<Route> all = routeRepository.findAll();
 
         System.out.println(String.format("A total of %s routes are persisted in the database", count));
-        Iterable<Route> sortedRoutes = routeRepository.findAll();
-        sortedRoutes.forEach(System.out::println);
-
+        routeRepository.insertToRepository("RE1",warehouseRepository.findByName("Rock century").getId(), warehouseRepository.findByName("Encor").getId(), 2300);
+        System.out.println("##Routes after inserting");
+        all = routeRepository.findAll();
+        all.forEach(System.out::println);
+        routeRepository.updateShippingCost(routeRepository.findByFromAndTo(warehouseRepository.findByName("Rock century").getId(), warehouseRepository.findByName("Encor").getId()).getId(), 1000);
+        System.out.println("##Routes after updating");
+        all = routeRepository.findAll();
+        all.forEach(System.out::println);
+        routeRepository.removeByName("RE1");
+        System.out.println("##Routes after removing");
+        all = routeRepository.findAll();
+        all.forEach(System.out::println);
 
     }
 

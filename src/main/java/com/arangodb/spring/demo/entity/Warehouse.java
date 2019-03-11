@@ -16,9 +16,8 @@ public class Warehouse {
     private String city;
     private String street;
     private String house;
-
-    @Relations(edges = Route.class, lazy = true)
-    private Collection<Route> routes;
+    //@Relations(edges = Route.class, lazy = true)
+    //private Collection<Route> routes;
 
     public Warehouse() {
         super();
@@ -31,9 +30,6 @@ public class Warehouse {
         this.street = street;
         this.house = house;
     }
-
-
-    // getter & setter
 
     @Override
     public String toString() {
@@ -48,11 +44,23 @@ public class Warehouse {
         return name;
     }
 
-    public String getAdress(){
-        return "city=" + city + "street=" + street + "house=" + house;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public Collection<Route> getRoutes() {
-        return routes;
-    }
+    public String getCity() { return city; }
+
+    public void setCity(String city) { this.city = city; }
+
+    public String getHouse() { return house; }
+
+    public void setHouse(String house) { this.house = house; }
+
+    public String getStreet() { return street;}
+
+    public void setStreet(String street) { this.street = street; }
+
+    public String getAdress(){ return "city=" + city + "street=" + street + "house=" + house; }
+
+   // public Collection<Route> getRoutes() { return routes; }
+
+    //public void setRoutes(Collection<Route> routes) { this.routes = routes; }
 }

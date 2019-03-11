@@ -9,9 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.arangodb.springframework.core.ArangoOperations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,11 +29,12 @@ public class CrudRunner implements CommandLineRunner {
         Iterable<Warehouse> allWarehouses = repository.findAll();
         allWarehouses.forEach(System.out::println);
 
-        Warehouse newWarehouse = new Warehouse("TestName", "TestCity", "TestStreet", "100");
-        repository.save(newWarehouse);
-
+        repository.insertToRepository("TestName", "TestCity", "TestStreet", "100");
 
         System.out.println("##All warehouses after saving");
+        Warehouse testWarehouse = repository.findByName("TestName");
+        System.out.println(testWarehouse.getId());
+        repository.updateName(testWarehouse.getId(), "Encor");
         allWarehouses = repository.findAll();
         allWarehouses.forEach(System.out::println);
 

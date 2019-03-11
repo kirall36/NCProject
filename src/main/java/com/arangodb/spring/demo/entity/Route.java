@@ -17,6 +17,7 @@ public class Route {
     @To
     private Warehouse to;
 
+
     private String name;
     private Integer shipping_cost;
 
@@ -28,11 +29,45 @@ public class Route {
         this.shipping_cost = shipping_cost;
     }
 
-    // setter & getter
 
     @Override
     public String toString() {
         return "Route [id=" + id + ", from=" + from + ", to=" + to + ", name=" + name + ", shipping_cost=" + shipping_cost + "]";
     }
 
+    public String getId(){
+        return id;
+    }
+
+    public Warehouse getFrom() {
+        return from;
+    }
+
+    public void setFrom(Warehouse from) {
+        this.from = from;
+    }
+
+    public Warehouse getTo() {
+        return to;
+    }
+
+    public void setTo(Warehouse to) {
+        this.to = to;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getShipping_cost() {
+        return shipping_cost;
+    }
+
+    public void setShipping_cost(Integer shipping_cost) {
+        this.shipping_cost = shipping_cost;
+    }
 }
