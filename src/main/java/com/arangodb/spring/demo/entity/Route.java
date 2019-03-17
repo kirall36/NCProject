@@ -5,6 +5,11 @@ import com.arangodb.springframework.annotation.Edge;
 import com.arangodb.springframework.annotation.From;
 import com.arangodb.springframework.annotation.To;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
+
 @Edge
 public class Route {
 
@@ -12,13 +17,19 @@ public class Route {
     private String id;
 
     @From
+    @NotNull
     private Warehouse from;
 
     @To
+    @NotNull
     private Warehouse to;
 
-
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z0-9_]+$")
     private String name;
+
+    @NotNull
+    @Min(value = 0)
     private Integer shipping_cost;
 
     public Route(final Warehouse from, final Warehouse to, final String name, final Integer shipping_cost) {

@@ -3,6 +3,10 @@ package com.arangodb.spring.demo.entity;
 import com.arangodb.springframework.annotation.Document;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -12,10 +16,22 @@ public class Order {
     @Id
     private String id;
 
+    @NotNull
+    @Min(value = 0)
     private Integer weight;
+
+    @Past
+    @NotNull
     private LocalDate date_of_creation;
+
+    @Future
+    @NotNull
     private LocalDate date_of_filling;
+
+    @NotNull
+    @Min(value = 0)
     private Integer price;
+
     private Collection<Route> path;
 
 

@@ -33,7 +33,13 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public Boolean isRouteExist(Route route) {
-        return routeRepository.exists(route.getId());
+        List<Route> routes = new ArrayList<>();
+        routeRepository.findAll().forEach(routes::add);
+        for(Route r : routes)
+        {
+            if(r.getName().equals(route.getName())) return true;
+        }
+        return false;
     }
 
     @Override

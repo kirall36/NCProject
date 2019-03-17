@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -42,24 +45,31 @@ public class OrderController {
 
     // -------------------Create an Order-------------------------------------------
     @RequestMapping(value = "/order/", method = RequestMethod.POST)
-    public ResponseEntity<?> createOrder(@RequestBody Order order, UriComponentsBuilder ucBuilder) {
-
+    public ResponseEntity<?> createOrder(@RequestBody @Valid Order order, BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity(new CustomErrorType(bindingResult.getFieldErrors().toString()), HttpStatus.CONFLICT);
+        }
         if (orderService.isOrderExist(order)) {
             return new ResponseEntity(new CustomErrorType("Unable to create. An Order with id " +
                     order.getId() + " already exist."),HttpStatus.CONFLICT);
         }
         orderService.save(order);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/api/order/{id}").buildAndExpand(order.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        //HttpHeaders headers = new HttpHeaders();
+        //headers.setLocation(ucBuilder.path("/api/order/{id}").buildAndExpand(order.getId()).toUri());
+        return new ResponseEntity<Order>(order, HttpStatus.CREATED);
     }
 
     // ------------------- Update an Order ------------------------------------------------
 
     @RequestMapping(value = "/order/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateOrder(@PathVariable("id") String id, @RequestBody Order order) {
+    public ResponseEntity<?> updateOrder(@PathVariable("id") String id, @RequestBody @Valid Order order, BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity(new CustomErrorType(bindingResult.getFieldErrors().toString()), HttpStatus.CONFLICT);
+        }
         Order currentOrder = orderService.findById("order/" + id);
 
         if (currentOrder == null) {

@@ -8,9 +8,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static java.lang.String.valueOf;
@@ -43,25 +45,33 @@ public class WarehouseController {
     }
 
     // -------------------Create a Warehouse-------------------------------------------
-    @RequestMapping(value = "/warehouse/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> createWarehouse(@RequestBody Warehouse warehouse, UriComponentsBuilder ucBuilder) {
+    @RequestMapping(value = "/warehouse/", method = RequestMethod.POST)
+    public ResponseEntity<?> createWarehouse(@RequestBody @Valid Warehouse warehouse, BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity(new CustomErrorType(bindingResult.getFieldErrors().toString()), HttpStatus.CONFLICT);
+        }
         if (warehouseService.isWarehouseExist(warehouse)) {
             return new ResponseEntity(new CustomErrorType("Unable to create. A Warehouse with id " +
                     warehouse.getId() + " already exist."),HttpStatus.CONFLICT);
         }
         warehouseService.save(warehouse);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/api/warehouse/{id}").buildAndExpand(warehouse.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        //HttpHeaders headers = new HttpHeaders();
+        //headers.setLocation(ucBuilder.path("/api/warehouse/{id}").buildAndExpand(warehouse.getId()).toUri());
+        return new ResponseEntity<Warehouse>(warehouse, HttpStatus.CREATED);
     }
 
     // ------------------- Update a Warehouse ------------------------------------------------
 
     @RequestMapping(value = "/warehouse/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateWarehouse(@PathVariable("id") String id, @RequestBody Warehouse warehouse) {
+    public ResponseEntity<?> updateWarehouse(@PathVariable("id") String id, @RequestBody @Valid Warehouse warehouse, BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity(new CustomErrorType(bindingResult.getFieldErrors().toString()), HttpStatus.CONFLICT);
+        }
         Warehouse currentWarehouse = warehouseService.findById("warehouses/" + id);
 
         if (currentWarehouse == null) {

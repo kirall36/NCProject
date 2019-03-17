@@ -4,6 +4,8 @@ import com.arangodb.springframework.annotation.Relations;
 import org.springframework.data.annotation.Id;
 import com.arangodb.springframework.annotation.Document;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Collection;
 
 @Document("warehouses")
@@ -12,10 +14,22 @@ public class Warehouse {
     @Id
     private String id;
 
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z0-9_]+$")
     private String name;
+
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z]+$")
     private String city;
+
+    @NotNull
+    @Pattern(regexp = "^[A-Za-z0-9_ ]+$")
     private String street;
+
+    @NotNull
+    @Pattern(regexp = "^[a-z/0-9_]+$")
     private String house;
+
     //@Relations(edges = Route.class, lazy = true)
     //private Collection<Route> routes;
 

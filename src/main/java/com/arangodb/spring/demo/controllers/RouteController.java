@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,24 +46,32 @@ public class RouteController {
 
     // -------------------Create a Route-------------------------------------------
     @RequestMapping(value = "/route/", method = RequestMethod.POST)
-    public ResponseEntity<?> createRoute(@RequestBody Route route, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<?> createRoute(@RequestBody @Valid Route route, BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity(new CustomErrorType(bindingResult.getFieldErrors().toString()), HttpStatus.CONFLICT);
+        }
         if (routeService.isRouteExist(route)) {
-            return new ResponseEntity(new CustomErrorType("Unable to create. A Route with id " +
-                    route.getId() + " already exist."),HttpStatus.CONFLICT);
+            return new ResponseEntity(new CustomErrorType("Unable to create. A Route with name " +
+                    route.getName() + " already exist."),HttpStatus.CONFLICT);
         }
         routeService.save(route);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/api/route/{id}").buildAndExpand(route.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        //HttpHeaders headers = new HttpHeaders();
+        //headers.setLocation(ucBuilder.path("/api/route/{id}").buildAndExpand(route.getId()).toUri());
+        return new ResponseEntity<Route>(route, HttpStatus.CREATED);
     }
 
     // ------------------- Update a Route ------------------------------------------------
 
     @RequestMapping(value = "/route/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateRoute(@PathVariable("id") String id, @RequestBody Route route) {
+    public ResponseEntity<?> updateRoute(@PathVariable("id") String id, @RequestBody @Valid Route route, BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors())
+        {
+            return new ResponseEntity(new CustomErrorType(bindingResult.getFieldErrors().toString()), HttpStatus.CONFLICT);
+        }
         Route currentRoute = routeService.findById("route/" + id);
 
         if (currentRoute == null) {

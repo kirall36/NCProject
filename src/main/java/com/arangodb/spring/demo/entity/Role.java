@@ -3,12 +3,15 @@ package com.arangodb.spring.demo.entity;
 import com.arangodb.springframework.annotation.Document;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotNull;
+
 @Document("role")
 public class Role {
 
     @Id
     private String id;
 
+    @NotNull
     private String name;
 
     public Role()
