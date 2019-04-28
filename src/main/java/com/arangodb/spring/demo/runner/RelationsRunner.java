@@ -28,7 +28,7 @@ public class RelationsRunner implements CommandLineRunner {
         System.out.println("##Routes after inserting");
         all = routeRepository.findAll();
         all.forEach(System.out::println);
-        routeRepository.updateShippingCost(routeRepository.findByFromAndTo(warehouseRepository.findByName("Rock century").getId(), warehouseRepository.findByName("Encor").getId()).getId(), 1000);
+        //routeRepository.updateShippingCost(routeRepository.findByFromAndTo(warehouseRepository.findByName("Rock century").getId(), warehouseRepository.findByName("Encor").getId()).getId(), 1000);
         System.out.println("##Routes after updating");
         all = routeRepository.findAll();
         all.forEach(System.out::println);

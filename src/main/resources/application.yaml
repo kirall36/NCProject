@@ -5,3 +5,25 @@ spring.datasource:
   user: root
   password: root
   database: shipment
+
+server:
+  port: 8844
+  ssl:
+    enabled: true
+    key-alias: tomcat
+    key-password: changeit
+    key-store: classpath:keystore.jks
+    key-store-provider: SUN
+    key-store-type: JKS
+    key-store-password: changeit
+
+mitre:
+    clientId: 3e93b0f1-bbf3-4a21-ab3c-6703eb29ea24
+    clientSecret: ANuoi0NK648ZkEbyL6wUhqCxRrtI01CAbcWhRudRWzScfUnYT8du78uvquK-uXlSrhPiStO0z3LDSRJkZOj2BhA
+    accessTokenUri: http://localhost:8081/openid-connect-server-webapp/token
+    userAuthorizationUri: http://localhost:8081/openid-connect-server-webapp/authorize
+    clientAuthenticationScheme: header
+    token-info-uri: http://localhost:8081/openid-connect-server-webapp/jwk
+    token-type: Bearer
+    key-uri: http://localhost:8081/openid-connect-server-webapp/jwk
+    redirectUri: https://localhost:8844/mitre_login

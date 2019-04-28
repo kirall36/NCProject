@@ -30,10 +30,10 @@ public class UserRunner implements CommandLineRunner {
     public void run(String... strings) throws Exception {
             User user = userRepository.findByLogin("admin");
             System.out.println("user " + userService.isUserExist(user));
-            User user1 = new User("testUser", "2314");
-            User user2 = new User("dsl;fj", "1242");
-            System.out.println("user1 " + userService.isUserExist(user1));
-            System.out.println("user2 " + userService.isUserExist(user2));
+            //User user1 = new User("testUser", "2314");
+            //User user2 = new User("dsl;fj", "1242");
+            //System.out.println("user1 " + userService.isUserExist(user1));
+            //System.out.println("user2 " + userService.isUserExist(user2));
 
         //        Role r1 = new Role("User");
 //        Role r2 = new Role("Administrator");

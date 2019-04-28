@@ -9,27 +9,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import com.arangodb.spring.demo.security.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class UserController {
+public class UserController{
 
     @Autowired
     UserService userService;
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(11);
-    }
+    @Autowired
+    TestSecurity testSecurity;
 
     // -------------------Retrieve All Users---------------------------------------------
-    @RequestMapping(value = "/user/", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsers() {
         List<User> users = userService.findAllUsers();
         if (users.isEmpty()) {
@@ -49,6 +48,26 @@ public class UserController {
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
+    // -------------------UI getAuthorizationData-------------------------------------------
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public ResponseEntity<?> getAuthorizationData(@RequestBody UserStats userStats) {
+        User user = userService.findByLogin(userStats.getLogin());
+        if ( user == null) {
+            return new ResponseEntity(new CustomErrorType("User with login " + userStats.getLogin()
+                    + " not found"), HttpStatus.NOT_FOUND);
+        }
+        if(testSecurity.encoder().matches(userStats.getPassword(), user.getPassword())) {
+            UserStatsRet userStatsRet = new UserStatsRet();
+            userStatsRet.setId(user.getId().substring(5));
+            return new ResponseEntity<UserStatsRet>(userStatsRet, HttpStatus.OK);
+        }
+
+        else{
+            return new ResponseEntity(new CustomErrorType("Wrong password for user with login " + userStats.getLogin()),
+                    HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     // -------------------Create a User-------------------------------------------
     @RequestMapping(value = "/user/", method = RequestMethod.POST)
     public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult bindingResult) {
@@ -62,11 +81,9 @@ public class UserController {
                     user.getLogin() + " already exist."),HttpStatus.CONFLICT);
         }
 
-        user.setPassword(encoder().encode(user.getPassword()));
+        user.setPassword(testSecurity.encoder().encode(user.getPassword()));
         userService.save(user);
 
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.setLocation(ucBuilder.path("/api/user/{id}").buildAndExpand(user.getId().substring(5)).toUri());
         return new ResponseEntity<User>(user, HttpStatus.CREATED);
     }
 
@@ -87,7 +104,9 @@ public class UserController {
         }
 
         currentUser.setLogin(user.getLogin());
-        currentUser.setPassword(encoder().encode(user.getPassword()));
+        currentUser.setPassword(testSecurity.encoder().encode(user.getPassword()));
+        currentUser.setEmail(user.getEmail());
+        currentUser.setPhone(user.getPhone());
         currentUser.setRoles(user.getRoles());
 
         userService.updateUser(currentUser);
@@ -117,5 +136,56 @@ public class UserController {
 
         userService.deleteAllUsers();
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+    }
+
+    public static class UserStats{
+        private String login;
+        private String password;
+
+        public UserStats(){super();}
+        public UserStats(final String login, final String password) {
+            super();
+            this.login = login;
+            this.password = password;
+        }
+
+        public String getLogin() {
+            return login;
+        }
+
+        public void setLogin(String login) {
+            this.login = login;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    public static class UserStatsRet{
+        private String userId;
+        private String token;
+
+        public UserStatsRet(){super();}
+
+        public String getId() {
+            return userId;
+        }
+
+        public void setId(String id) {
+            this.userId = id;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
 }

@@ -6,7 +6,8 @@ import java.util.Optional;
 
 public interface OrderService{
 
-    Optional<Order> save(Order order);
+    Order save(Order order);
+    Order create(Order order);
     List<Order> findAllOrders();
     Order findById(String id);
     Boolean isOrderExist(Order order);

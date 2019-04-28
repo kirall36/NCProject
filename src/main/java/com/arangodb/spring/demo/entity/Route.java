@@ -32,6 +32,11 @@ public class Route {
     @Min(value = 0)
     private Integer shipping_cost;
 
+    public Route()
+    {
+        super();
+    }
+
     public Route(final Warehouse from, final Warehouse to, final String name, final Integer shipping_cost) {
         super();
         this.from = from;

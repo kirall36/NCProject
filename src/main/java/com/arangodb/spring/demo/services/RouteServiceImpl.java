@@ -1,11 +1,13 @@
 package com.arangodb.spring.demo.services;
 
 import com.arangodb.spring.demo.entity.Route;
+import com.arangodb.spring.demo.entity.Warehouse;
 import com.arangodb.spring.demo.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,17 @@ public class RouteServiceImpl implements RouteService {
         List<Route> routes = new ArrayList<>();
         routeRepository.findAll().forEach(routes::add);
         return routes;
+    }
+
+    @Override
+    public List<Route> findShortestPath(String from, String to){
+        List<Route> path = new ArrayList<>();
+        Collection<Route> routes = routeRepository.findShortestPath(from, to); //.forEach(path::add);\
+        for(Route r : routes)
+        {
+            System.out.printf(r.toString());
+        }
+        return path;
     }
 
     @Override

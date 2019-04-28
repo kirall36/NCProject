@@ -1,6 +1,7 @@
 package com.arangodb.spring.demo.entity;
 
 import com.arangodb.springframework.annotation.Document;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.Id;
 
 import java.util.Collection;
@@ -16,9 +17,20 @@ public class User {
 
     @Pattern(regexp = "^[A-Za-z0-9_]+$")
     private String login;
+
     @NotNull
     @Size(min=8, max=32)
     private String password;
+
+
+    @Email
+    @NotNull
+    private String email;
+
+    @NotNull
+    @Pattern(regexp = "^[0-9]+$")
+    private String phone;
+
     @NotNull
     private Collection<Role> roles;
 
@@ -26,23 +38,27 @@ public class User {
         super();
     }
 
-    public User(final String login, final String password)
+    public User(final String login, final String password, final String email, final String phone)
     {
         super();
         this.login = login;
         this.password = password;
+        this.email = email;
+        this.phone = phone;
     }
 
-    public User(final String login, final String password, final Collection<Role> roles) {
+    public User(final String login, final String password, final String email, final String phone, final Collection<Role> roles) {
         super();
         this.login = login;
         this.password = password;
+        this.email = email;
+        this.phone = phone;
         this.roles = roles;
     }
 
     @Override
     public String toString() {
-        return "User [id=" + id + ", login=" + login + ", password=" + password + ", roles=" + roles.toString() + "]";
+        return "User [id=" + id + ", login=" + login + ", password=" + password + ", email=" + email + ", phone=" + phone + ", roles=" + roles.toString() + "]";
     }
 
     //getter & setter
@@ -69,6 +85,22 @@ public class User {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getId() {

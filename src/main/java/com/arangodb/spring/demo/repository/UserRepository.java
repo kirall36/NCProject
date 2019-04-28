@@ -7,4 +7,6 @@ public interface UserRepository extends ArangoRepository<User> {
 
     User findById(String Id);
     User findByLogin(String Login);
+    User findByEmail(String Email);
+    User findByPhone(String Phone);
 }

@@ -54,7 +54,8 @@ public class OrderController {
             return new ResponseEntity(new CustomErrorType("Unable to create. An Order with id " +
                     order.getId() + " already exist."),HttpStatus.CONFLICT);
         }
-        orderService.save(order);
+
+        orderService.create(order);
 
         //HttpHeaders headers = new HttpHeaders();
         //headers.setLocation(ucBuilder.path("/api/order/{id}").buildAndExpand(order.getId()).toUri());
@@ -81,6 +82,9 @@ public class OrderController {
         currentOrder.setDate_of_creation(order.getDate_of_creation());
         currentOrder.setDate_of_filling(order.getDate_of_filling());
         currentOrder.setPrice(order.getPrice());
+        currentOrder.setFrom(order.getFrom());
+        currentOrder.setTo(order.getTo());
+        currentOrder.setStatus(order.isStatus());
         currentOrder.setPath(order.getPath());
 
         orderService.updateOrder(currentOrder);

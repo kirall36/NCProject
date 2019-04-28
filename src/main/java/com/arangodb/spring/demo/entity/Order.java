@@ -1,5 +1,6 @@
 package com.arangodb.spring.demo.entity;
 
+import com.arangodb.spring.demo.services.RouteService;
 import com.arangodb.springframework.annotation.Document;
 import org.springframework.data.annotation.Id;
 
@@ -26,7 +27,16 @@ public class Order {
 
     @Future
     @NotNull
-    private LocalDate date_of_filling;
+    private LocalDate date_of_filling; //complition date
+
+    @NotNull
+    private boolean status;
+
+    @NotNull
+    private Warehouse from;
+
+    @NotNull
+    private Warehouse to;
 
     @NotNull
     @Min(value = 0)
@@ -39,21 +49,28 @@ public class Order {
         super();
     }
 
-    public Order(final Integer weight, final LocalDate date_of_creation, final LocalDate date_of_filling, final Integer price) {
+    public Order(final Integer weight, final LocalDate date_of_creation, final LocalDate date_of_filling, final boolean status, final Integer price, final Warehouse from, final Warehouse to) {
         super();
         this.weight = weight;
         this.date_of_creation = date_of_creation;
         this.date_of_filling = date_of_filling;
+        this.status = status;
         this.price = price;
+        this.from = from;
+        this.to = to;
+        this.path = null;
     }
 
 
-    public Order(final Integer weight, final LocalDate date_of_creation, final LocalDate date_of_filling, final Integer price, final Collection<Route> path) {
+    public Order(final Integer weight, final LocalDate date_of_creation, final LocalDate date_of_filling, final boolean status, final Integer price, final Warehouse from, final Warehouse to, final Collection<Route> path) {
         super();
         this.weight = weight;
         this.date_of_creation = date_of_creation;
         this.date_of_filling = date_of_filling;
+        this.status = status;
         this.price = price;
+        this.from = from;
+        this.to = to;
         this.path = path;
     }
 
@@ -61,8 +78,9 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order [id=" + id + ", weight=" + weight + ", date_of_creation=" + date_of_creation + ", date_of_filling=" + date_of_filling
-                + ", price=" + price + ", path=" + path.toString()+ "]";
+        return "Order [id=" + id + ", weight=" + weight + ", date_of_creation=" + date_of_creation + ", date_of_filling=" + date_of_filling +
+                ", status=" + status + ", from=" + from.getId() + ", to=" + to.getId()
+                + ", price=" + price + "]";
     }
 
     public String getId(){
@@ -99,6 +117,30 @@ public class Order {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public Warehouse getFrom() {
+        return from;
+    }
+
+    public void setFrom(Warehouse from) {
+        this.from = from;
+    }
+
+    public Warehouse getTo() {
+        return to;
+    }
+
+    public void setTo(Warehouse to) {
+        this.to = to;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     public Collection<Route> getPath() { return path; }
